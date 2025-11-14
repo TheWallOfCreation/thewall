@@ -47,3 +47,5 @@ function renderProjects(projects) {
         grid.appendChild(card);
     });
 }
+// 🔄 Auto-refresh var 60 sek
+setInterval(loadProjects, 60000);
