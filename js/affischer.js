@@ -1,7 +1,7 @@
 // === Ladda affischer från n8n ===
 async function loadAffischer() {
   try {
-    const response = await fetch("https://DIN-N8N-WEBHOOK-HÄR");
+    const response = await fetch("https://conzpiro.duckdns.org/webhook/892e722e-c619-468a-8df0-233d7dc53963");
     const data = await response.json();
 
     console.log("Affischer laddade:", data);
