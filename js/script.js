@@ -38,7 +38,8 @@ function renderProjects(projects) {
                 <br>
 				<strong>Ungdom:</strong> ${p.skapadAv}<br>
                 <strong>Coach:</strong> ${p.coach}<br>
-				<strong>Information</strong><br> ${p.info}
+				<strong>Information</strong>
+				${p.info}
 
 
             </div>
