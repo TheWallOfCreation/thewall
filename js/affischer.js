@@ -1,7 +1,7 @@
 // === Hämta affischer från n8n ===
 async function loadAffischer() {
   try {
-    const response = await fetch("https://conzpiro.duckdns.org/webhook/892e722e-c619-468a-8df0-233d7dc53963");
+    const response = await fetch("https://DIN-N8N-WEBHOOK-HÄR");
     const data = await response.json();
     startSlideshow(data);
   } catch (err) {
@@ -9,7 +9,7 @@ async function loadAffischer() {
   }
 }
 
-// === Visa affischer i loop ===
+// === Visa affischer i helskärm, en gång vardera, sedan vidare ===
 function startSlideshow(affischer) {
   if (!affischer || affischer.length === 0) {
     console.error("Inga affischer att visa.");
@@ -21,19 +21,23 @@ function startSlideshow(affischer) {
 
   function showNext() {
     const current = affischer[index];
-
-    // Sätt bilden
     img.src = current.bild;
 
-    // Tidsinställning (sekunder → ms)
     const tid = current.visningstid
       ? current.visningstid * 1000
-      : 8000; // fallback: 8 sek
+      : 8000; // fallback 8 sek
 
-    // Gå vidare
-    index = (index + 1) % affischer.length;
+    index++;
 
-    // Visa nästa
+    // === När ALLA affischer visats → gå till projekt.html ===
+    if (index >= affischer.length) {
+      setTimeout(() => {
+        window.location.href = "projekt.html";
+      }, tid);
+      return;
+    }
+
+    // === Annars visa nästa affisch ===
     setTimeout(showNext, tid);
   }
 
