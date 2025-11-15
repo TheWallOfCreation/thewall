@@ -2,11 +2,6 @@
 <html lang="sv">
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<style>
-  body {
-    zoom: 0.75; /* Gör hela layouten 25% mindre */
-  }
-</style>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Projektväggen</title>
@@ -25,5 +20,14 @@
   </footer>
 
   <script src="js/script.js"></script>
+
+  <script>
+  // Efter 20 sekunder → hoppa till affischer.html
+  setTimeout(() => {
+    window.location.href = "affischer.html";
+  }, 20000); // 20000 ms = 20 sek
+</script>
+
+  
 </body>
 </html>
