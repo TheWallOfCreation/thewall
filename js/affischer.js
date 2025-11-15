@@ -1,51 +1,44 @@
-console.log("JS LOADED!");
-
-fetch("https://conzpiro.duckdns.org/webhook/454e688e-2e17-4cfc-ac06-11438513273d")
-  .then(r => {
-    console.log("FETCH RESPONSE STATUS:", r.status);
-    return r.json();
-  })
-  .then(data => console.log("FETCH DATA:", data))
-  .catch(err => console.error("FETCH ERROR:", err));
-
-
-async function loadProjects() {
-    const response = await fetch("https://conzpiro.duckdns.org/webhook/454e688e-2e17-4cfc-ac06-11438513273d");
+// === Hämta affischer från n8n ===
+async function loadAffischer() {
+  try {
+    const response = await fetch("https://DIN-N8N-WEBHOOK-HÄR");
     const data = await response.json();
-    renderProjects(data);
+    startSlideshow(data);
+  } catch (err) {
+    console.error("Kunde inte ladda affischer:", err);
+  }
 }
 
-loadProjects();
+// === Visa affischer i loop ===
+function startSlideshow(affischer) {
+  if (!affischer || affischer.length === 0) {
+    console.error("Inga affischer att visa.");
+    return;
+  }
 
-function renderProjects(projects) {
-    const grid = document.getElementById("project-grid");
-    grid.innerHTML = "";
+  const img = document.getElementById("affisch");
+  let index = 0;
 
-    projects.forEach(p => {
-        const card = document.createElement("div");
-        card.className = "card";
+  function showNext() {
+    const current = affischer[index];
 
-        card.innerHTML = `
-            <div class="image-container">
-                <img src="${p.bild}" alt="${p.projektNamn}">
-                <h2>${p.projektNamn}</h2>
-            </div>
+    // Sätt bilden
+    img.src = current.bild;
 
-            <div class="card-content">
-                <div class="status ${p.steg.toLowerCase()}">
-                    ${p.steg}
-                </div>
-                <br>
-				<strong>Ungdom:</strong> ${p.skapadAv}<br>
-                <strong>Coach:</strong> ${p.coach}<br>
-				<strong>Information</strong><br> ${p.info}
+    // Tidsinställning (sekunder → ms)
+    const tid = current.visningstid
+      ? current.visningstid * 1000
+      : 8000; // fallback: 8 sek
 
+    // Gå vidare
+    index = (index + 1) % affischer.length;
 
-            </div>
-        `;
+    // Visa nästa
+    setTimeout(showNext, tid);
+  }
 
-        grid.appendChild(card);
-    });
+  showNext();
 }
-// 🔄 Auto-refresh var 60 sek
-setInterval(loadProjects, 60000);
+
+// Starta allt
+loadAffischer();
