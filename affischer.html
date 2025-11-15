@@ -1,29 +1,35 @@
 <!DOCTYPE html>
 <html lang="sv">
 <head>
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<style>
-  body {
-    zoom: 0.75; /* Gör hela layouten 25% mindre */
-  }
-</style>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Projektväggen</title>
-  <link rel="stylesheet" href="css/style.css" />
+  <title>Affischer</title>
+
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: black;
+      overflow: hidden;
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    #affisch {
+      width: 100vw;
+      height: 100vh;
+      object-fit: contain;  /* visa hela affischen utan beskärning */
+      background: black;
+    }
+  </style>
 </head>
 <body>
-  <header>
-    <h1>Projektväggen</h1>
-    <p>En snabb överblick över allt som är igång just nu</p>
-  </header>
 
-  <main id="project-grid" class="grid"></main>
+  <img id="affisch" src="" alt="Affisch">
 
-  <footer>
-    <p>Uppdateras automatiskt från n8n</p>
-  </footer>
-
-  <script src="js/script.js"></script>
+  <script src="js/affischer.js"></script>
 </body>
 </html>
