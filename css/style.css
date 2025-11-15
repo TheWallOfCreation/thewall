@@ -19,8 +19,8 @@ header {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 10px;
-  padding: 10px;
+  gap: 1.5rem;
+  padding: 2rem;
 }
 
 /* ==== Kort ==== */
@@ -28,7 +28,7 @@ header {
   background: white;
   border-radius: 1rem;
   box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-  width: 300px;
+  width: 260px;
   overflow: hidden;
   text-align: left;
   transition: transform 0.2s ease;
@@ -99,56 +99,50 @@ header {
 .status.pågår { background: #28a745; }
 .status.avslutad { background: #6c757d; }
 
+/* ==== Pulsanimationer ==== */
+
+/* Idé – mjuk, långsam puls */
+.status.idé {
+  animation: pulseIdea 2.4s infinite;
+}
+
+@keyframes pulseIdea {
+  0%   { transform: scale(1); opacity: 1; }
+  50%  { transform: scale(1.04); opacity: 0.9; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+/* Planering – lite tydligare puls */
+.status.planering {
+  animation: pulsePlan 2s infinite;
+}
+
+@keyframes pulsePlan {
+  0%   { transform: scale(1); }
+  50%  { transform: scale(1.06); }
+  100% { transform: scale(1); }
+}
+
+/* Pågår – mest energi med glöd */
+.status.pågår {
+  animation: pulseActive 1.6s infinite;
+}
+
+@keyframes pulseActive {
+  0%   { transform: scale(1); box-shadow: 0 0 0 rgba(0,0,0,0.2); }
+  50%  { transform: scale(1.08); box-shadow: 0 0 12px rgba(0,0,0,0.3); }
+  100% { transform: scale(1); box-shadow: 0 0 0 rgba(0,0,0,0.2); }
+}
+
+/* Avslutad – ingen puls */
+.status.avslutad {
+  animation: none;
+}
+
 footer {
   background: #004b44;
   color: #eee;
   padding: 0.5rem;
   font-size: 0.8rem;
   margin-top: 2rem;
-}
-
-/* ========== LAGOM TV-LÄGE MED LUFT ========== */
-@media screen and (min-width: 1200px) {
-
-  /* Grid – lite mer space mellan korten */
-  .grid {
-    padding: 2rem 1.5rem;
-    gap: 2rem;
-  }
-
-  /* Kort – lite mer space inuti utan att bli gigantiska */
-  .card {
-    width: 280px;
-    border-radius: 1rem;
-  }
-
-  .card-content {
-    padding: 1.2rem 1.4rem;
-    line-height: 1.35; /* inte tätt, inte luftigt */
-  }
-
-  /* Luft mellan rubriken i bilden och dess kant */
-  .image-container h2 {
-    bottom: 1.2rem;
-    font-size: 1.2rem;
-  }
-
-  /* Lite vertical spacing mellan text-rader */
-  .card-content strong {
-    display: block;
-    margin-top: 0.6rem;
-  }
-
-  /* Status-taggen får en liten buffert åt båda håll */
-  .status {
-    margin-bottom: 0.8rem;
-  }
-}
-.card {
-  animation: fadeIn 0.5s ease;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
 }
