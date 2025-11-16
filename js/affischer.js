@@ -28,26 +28,22 @@ function startSlideshow(affischer) {
 
     container.innerHTML = "";
 
-    // --- Airtable skickar ALLT som array [ { url, type, filename } ]
-    const file = current.bild?.[0]; 
-    const url = file?.url || "";
-    const type = file?.type || "";
-
+    // n8n skickar en STRÄNG: current.bild = "https://..."
+    const url = current.bild || "";
     console.log("URL:", url);
-    console.log("TYPE:", type);
 
-    const isVideo =
-      type.startsWith("video") ||
-      url.toLowerCase().includes(".mp4");
+    // Om URL innehåller .mp4 någonstans i mitten → VIDEO
+    const isVideo = url.toLowerCase().includes(".mp4");
+    console.log("isVideo:", isVideo);
 
-    // DEFAULT – visningstid för bilder
+    // visningstid i sekunder
     let tid = parseInt(current.visningstid) * 1000;
     if (isNaN(tid) || tid < 1000) tid = 8000;
 
     let element;
 
     if (isVideo) {
-      console.log("Detta är en VIDEO:", url);
+      console.log("Detta är en VIDEO");
 
       element = document.createElement("video");
       element.src = url;
@@ -55,27 +51,24 @@ function startSlideshow(affischer) {
       element.muted = true;
       element.playsInline = true;
       element.controls = false;
-      element.loop = false;     // Spela EN gång
+      element.loop = false;
       element.style.width = "100%";
       element.style.height = "100%";
       element.style.objectFit = "contain";
 
-      // När videon är klar → nästa
-      element.addEventListener("ended", () => {
-        console.log("Video färdig → nästa slide");
-        nextStep();
-      });
+      // När videon är klar → nästa slide
+      element.addEventListener("ended", nextStep);
 
-      // Om videon inte kan spelas → fallback via tid
+      // Om videon inte kan spelas → fallback
       element.addEventListener("error", () => {
-        console.log("Videofel → fallback-tid");
+        console.log("Videofel → fallback");
         setTimeout(nextStep, tid);
       });
 
       container.appendChild(element);
 
     } else {
-      console.log("Detta är en BILD:", url);
+      console.log("Detta är en BILD");
 
       element = document.createElement("img");
       element.src = url;
@@ -91,13 +84,11 @@ function startSlideshow(affischer) {
 
   function nextStep() {
     index++;
-
     if (index >= affischer.length) {
       console.log("Alla affischer visade → projekt.html");
       window.location.href = "projekt.html";
       return;
     }
-
     showNext();
   }
 
