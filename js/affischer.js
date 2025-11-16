@@ -28,8 +28,17 @@ function startSlideshow(affischer) {
 
     container.innerHTML = "";
 
-    const url = current.bild;
-    const isVideo = url.toLowerCase().includes(".mp4");
+    // --- Airtable skickar ALLT som array [ { url, type, filename } ]
+    const file = current.bild?.[0]; 
+    const url = file?.url || "";
+    const type = file?.type || "";
+
+    console.log("URL:", url);
+    console.log("TYPE:", type);
+
+    const isVideo =
+      type.startsWith("video") ||
+      url.toLowerCase().includes(".mp4");
 
     // DEFAULT – visningstid för bilder
     let tid = parseInt(current.visningstid) * 1000;
@@ -38,7 +47,7 @@ function startSlideshow(affischer) {
     let element;
 
     if (isVideo) {
-      console.log("Detta är en video:", url);
+      console.log("Detta är en VIDEO:", url);
 
       element = document.createElement("video");
       element.src = url;
@@ -46,18 +55,18 @@ function startSlideshow(affischer) {
       element.muted = true;
       element.playsInline = true;
       element.controls = false;
-      element.loop = false;               // spela EN gång
+      element.loop = false;     // Spela EN gång
       element.style.width = "100%";
       element.style.height = "100%";
       element.style.objectFit = "contain";
 
-      // === När videon är klar → nästa affisch ===
+      // När videon är klar → nästa
       element.addEventListener("ended", () => {
-        console.log("Video färdig → nästa");
+        console.log("Video färdig → nästa slide");
         nextStep();
       });
 
-      // === Om videon inte kan spelas → fallback till visningstid ===
+      // Om videon inte kan spelas → fallback via tid
       element.addEventListener("error", () => {
         console.log("Videofel → fallback-tid");
         setTimeout(nextStep, tid);
@@ -66,7 +75,7 @@ function startSlideshow(affischer) {
       container.appendChild(element);
 
     } else {
-      console.log("Detta är en bild:", url);
+      console.log("Detta är en BILD:", url);
 
       element = document.createElement("img");
       element.src = url;
@@ -76,7 +85,6 @@ function startSlideshow(affischer) {
 
       container.appendChild(element);
 
-      // Endast bilder använder visningstid direkt
       setTimeout(nextStep, tid);
     }
   }
