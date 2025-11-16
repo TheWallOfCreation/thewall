@@ -1,99 +1,49 @@
-// === Ladda affischer från n8n ===
-async function loadAffischer() {
-  try {
-    const response = await fetch("https://conzpiro.duckdns.org/webhook/892e722e-c619-468a-8df0-233d7dc53963");
+console.log("JS LOADED!");
+
+fetch("https://conzpiro.duckdns.org/webhook/454e688e-2e17-4cfc-ac06-11438513273d")
+  .then(r => {
+    console.log("FETCH RESPONSE STATUS:", r.status);
+    return r.json();
+  })
+  .then(data => console.log("FETCH DATA:", data))
+  .catch(err => console.error("FETCH ERROR:", err));
+
+
+async function loadProjects() {
+    const response = await fetch("https://conzpiro.duckdns.org/webhook/454e688e-2e17-4cfc-ac06-11438513273d");
     const data = await response.json();
-
-    console.log("Affischer laddade:", data);
-
-    startSlideshow(data);
-  } catch (err) {
-    console.error("Kunde inte ladda affischer:", err);
-  }
+    renderProjects(data);
 }
 
-// === Visa alla affischer en gång → sedan projekt.html ===
-function startSlideshow(affischer) {
-  if (!affischer || affischer.length === 0) {
-    console.error("Inga affischer att visa.");
-    return;
-  }
+loadProjects();
 
-  const container = document.getElementById("affischContainer");
-  let index = 0;
+function renderProjects(projects) {
+    const grid = document.getElementById("project-grid");
+    grid.innerHTML = "";
 
-  function showNext() {
-    const current = affischer[index];
-    console.log("Visar affisch index:", index, current);
+    projects.forEach(p => {
+        const card = document.createElement("div");
+        card.className = "card";
 
-    container.innerHTML = "";
+        card.innerHTML = `
+            <div class="image-container">
+                <img src="${p.bild}" alt="${p.projektNamn}">
+                <h2>${p.projektNamn}</h2>
+            </div>
 
-    const url = current.bild;
-    const isVideo = url.toLowerCase().endsWith(".mp4");
+            <div class="card-content">
+                <div class="status ${p.steg.toLowerCase()}">
+                    ${p.steg}
+                </div>
+                <br>
+				<strong>Ungdom:</strong> ${p.skapadAv}<br>
+                <strong>Coach:</strong> ${p.coach}<br>
+				<strong>Information</strong><br> ${p.info}
 
-    // DEFAULT – visningstid för bilder
-    let tid = parseInt(current.visningstid) * 1000;
-    if (isNaN(tid) || tid < 1000) tid = 8000;
 
-    let element;
+            </div>
+        `;
 
-    if (isVideo) {
-      console.log("Detta är en video:", url);
-
-      element = document.createElement("video");
-      element.src = url;
-      element.autoplay = true;
-      element.muted = true;
-      element.playsInline = true;
-      element.controls = false;
-      element.loop = false;               // spela EN gång
-      element.style.width = "100%";
-      element.style.height = "100%";
-      element.style.objectFit = "contain";
-
-      // === När videon är klar → nästa affisch ===
-      element.addEventListener("ended", () => {
-        console.log("Video färdig → nästa");
-        nextStep();
-      });
-
-      // === Om videon inte kan spelas → fallback till visningstid ===
-      element.addEventListener("error", () => {
-        console.log("Videofel → fallback-tid");
-        setTimeout(nextStep, tid);
-      });
-
-      container.appendChild(element);
-
-    } else {
-      console.log("Detta är en bild:", url);
-
-      element = document.createElement("img");
-      element.src = url;
-      element.style.width = "100%";
-      element.style.height = "100%";
-      element.style.objectFit = "contain";
-
-      container.appendChild(element);
-
-      // Endast bilder använder visningstid direkt
-      setTimeout(nextStep, tid);
-    }
-  }
-
-  function nextStep() {
-    index++;
-
-    if (index >= affischer.length) {
-      console.log("Alla affischer visade → projekt.html");
-      window.location.href = "projekt.html";
-      return;
-    }
-
-    showNext();
-  }
-
-  showNext();
+        grid.appendChild(card);
+    });
 }
-
-loadAffischer();
