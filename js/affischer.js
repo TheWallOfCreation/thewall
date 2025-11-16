@@ -3,9 +3,7 @@ async function loadAffischer() {
   try {
     const response = await fetch("https://conzpiro.duckdns.org/webhook/892e722e-c619-468a-8df0-233d7dc53963");
     const data = await response.json();
-
     console.log("Affischer laddade:", data);
-
     startSlideshow(data);
   } catch (err) {
     console.error("Kunde inte ladda affischer:", err);
@@ -28,15 +26,13 @@ function startSlideshow(affischer) {
 
     container.innerHTML = "";
 
-    // n8n skickar en STRÄNG: current.bild = "https://..."
+    // n8n skickar STRÄNG:
     const url = current.bild || "";
-    console.log("URL:", url);
-
-    // Om URL innehåller .mp4 någonstans i mitten → VIDEO
     const isVideo = url.toLowerCase().includes(".mp4");
+
+    console.log("URL:", url);
     console.log("isVideo:", isVideo);
 
-    // visningstid i sekunder
     let tid = parseInt(current.visningstid) * 1000;
     if (isNaN(tid) || tid < 1000) tid = 8000;
 
@@ -52,17 +48,35 @@ function startSlideshow(affischer) {
       element.playsInline = true;
       element.controls = false;
       element.loop = false;
+      element.preload = "auto";
       element.style.width = "100%";
       element.style.height = "100%";
       element.style.objectFit = "contain";
 
-      // När videon är klar → nästa slide
-      element.addEventListener("ended", nextStep);
+      // === Fallback om videon aldrig startar ===
+      const fallbackTimeout = setTimeout(() => {
+        console.log("Video fastnade → fallback timeout");
+        nextStep();
+      }, tid + 3000);
 
-      // Om videon inte kan spelas → fallback
+      // När videon startar → rensa fallback
+      element.addEventListener("playing", () => {
+        console.log("Video playing → okej");
+        clearTimeout(fallbackTimeout);
+      });
+
+      // När videon är slut → nästa
+      element.addEventListener("ended", () => {
+        console.log("Video klar → nästa");
+        clearTimeout(fallbackTimeout);
+        nextStep();
+      });
+
+      // Om videon får error → fallback
       element.addEventListener("error", () => {
-        console.log("Videofel → fallback");
-        setTimeout(nextStep, tid);
+        console.log("Video error → nästa");
+        clearTimeout(fallbackTimeout);
+        setTimeout(nextStep, 500);
       });
 
       container.appendChild(element);
@@ -75,7 +89,6 @@ function startSlideshow(affischer) {
       element.style.width = "100%";
       element.style.height = "100%";
       element.style.objectFit = "contain";
-
       container.appendChild(element);
 
       setTimeout(nextStep, tid);
