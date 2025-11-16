@@ -29,7 +29,7 @@ function startSlideshow(affischer) {
     container.innerHTML = "";
 
     const url = current.bild;
-    const isVideo = url.toLowerCase().endsWith(".mp4");
+    const isVideo = url.toLowerCase().includes(".mp4");
 
     // DEFAULT – visningstid för bilder
     let tid = parseInt(current.visningstid) * 1000;
