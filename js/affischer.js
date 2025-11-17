@@ -40,8 +40,8 @@ async function cacheAllMedia(affischer) {
 
   for (let i = 0; i < total; i++) {
     const item = affischer[i];
-    const url = item.bild;
-    const isVideo = url.toLowerCase().includes(".mp4");
+    const url = item.url;           // <--- Viktigt! Nya n8n-fältet
+    const isVideo = item.type === "video"; // <--- Viktigt! Typ från n8n
 
     if (isVideo) {
       // === Ladda video som blob ===
